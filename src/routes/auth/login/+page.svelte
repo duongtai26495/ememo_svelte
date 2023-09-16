@@ -99,7 +99,7 @@
 </svelte:head>
 <div class="w-full h-screen flex flex-col p-4 items-center justify-center">
     <div
-        class="flex w-full lg:max-w-2xl rounded-lg lg:shadow-lg overflow-hidden m-auto self-center login-wrapper"
+        class="flex w-full lg:max-w-2xl rounded-lg lg:shadow-lg overflow-hidden m-auto self-center moveRight"
     >
         <div class="w-1/2 p-8 bg-form hidden lg:flex">
             <div

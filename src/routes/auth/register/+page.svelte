@@ -1,5 +1,6 @@
 <script>
     import axios from "axios";
+    import { goto } from "$app/navigation";
     const URL_PREFIX = "http://192.168.1.19:8080/";
 
     let l_nameRef;
@@ -33,11 +34,13 @@
             headers: { "Content-Type": "application/json" },
         };
         await axios.request(config);
-        window.location = "/auth/activate-account";
+        loading = false;
+        goto("/auth/activate-account");
     };
 
     const checkInputRegister = async () => {
         loading = true;
+        errorMsgCommon = "";
         if (f_name.length < 3 || l_name.length < 3) {
             errorMsgFullname = "Name must be more than 3 characters";
             isError = true;
@@ -90,10 +93,6 @@
                     const result = error.response.data;
                     errorMsgCommon = result.msg;
                 })
-                .finally(() => {
-                    loading = false;
-                });
-
             await sendActivateCode(email);
         }
         loading = false;
@@ -113,7 +112,7 @@
     class="w-full h-screen flex flex-col p-0 lg:p-2 items-center justify-center"
 >
     <div
-        class="flex w-full lg:max-w-2xl rounded-lg lg:shadow-lg overflow-hidden m-auto self-center register-wrapper"
+        class="flex w-full lg:max-w-2xl rounded-lg lg:shadow-lg overflow-hidden m-auto self-center moveLeft"
     >
         <div class="w-1/2 p-2 bg-form hidden lg:flex">
             <div
