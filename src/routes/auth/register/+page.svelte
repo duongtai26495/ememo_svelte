@@ -73,7 +73,8 @@
                 .then((response) => {
                     console.log(response)
                     if (response.status === 201) {
-                        window.location = "/auth/login"
+                        localStorage.setItem("activate_email",email)
+                        window.location = "/auth/activate-account"
                     } else {
                         errorMsgCommon = "Something went wrong !!";
                     }
