@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body{overflow: hidden;}
+.bg-auth{
+    width: 105vw;
+    height: 105vh;
+    background-image: url(https://source.unsplash.com/random);
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: blur(7px);
+    z-index: -1;
+}
+
+.bg-form{
+    background-image: url(https://source.unsplash.com/random);
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
