@@ -56,3 +56,33 @@ body{overflow: hidden;}
         transform: translateX(0);
     }
 }
+
+@keyframes moveRight {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0); 
+    }
+}
+
+@keyframes moveLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0); 
+    }
+}
+.login-wrapper{
+    animation: moveRight .5s linear; 
+    animation-play-state: running;
+}
+.register-wrapper{
+    animation: moveLeft .5s linear; 
+    animation-play-state: running;
+}

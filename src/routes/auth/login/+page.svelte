@@ -93,21 +93,22 @@
         }
     };
 </script>
+
 <svelte:head>
-    <title>Authentication - Login</title> 
+    <title>Authentication - Login</title>
 </svelte:head>
 <div class="w-full h-screen flex flex-col p-4 items-center justify-center">
     <div
-        class="flex w-full lg:max-w-2xl rounded-lg lg:shadow-lg overflow-hidden m-auto self-center"
+        class="flex w-full lg:max-w-2xl rounded-lg lg:shadow-lg overflow-hidden m-auto self-center login-wrapper"
     >
         <div class="w-1/2 p-8 bg-form hidden lg:flex">
             <div
-                class="text-center m-auto rounded-md border bg-white bg-opacity-90 p-4"
+                class="text-center m-auto rounded-md border bg-black bg-opacity-50 p-4"
             >
-                <p class="text-gray-600 text-sm">
+                <p class="text-white text-sm">
                     Chưa có tài khoản? <a
                         href="/auth/register"
-                        class="text-black lg:hover:underline font-bold"
+                        class="text-white lg:hover:underline font-bold"
                         >Đăng ký</a
                     >
                 </p>
@@ -116,7 +117,7 @@
 
         <!-- Phần form đăng nhập bên phải -->
         <div
-        class="w-96 mx-auto h-full lg:h-fit lg:w-1/2 p-8 bg-white rounded-md lg:rounded-none bg-opacity-70 lg:bg-opacity-50"
+            class="w-96 mx-auto h-full lg:h-fit lg:w-1/2 p-8 bg-white rounded-md lg:rounded-none bg-opacity-70 lg:bg-opacity-50"
         >
             <div class="text-center mb-4">
                 <h1 class="text-2xl font-semibold mb-2">Đăng nhập</h1>
@@ -180,10 +181,10 @@
                         on:click={toggleSwitch}
                         class={`${
                             isRememberMe ? "switch_active" : ""
-                        } w-12 h-6 remember-switch-bg border rounded-full justify-center flex items-center`}
+                        } w-12 h-6 remember-switch-bg border-2 rounded-full justify-center flex items-center`}
                     >
                         <span
-                            class={`button-switch h-5 w-5 rounded-full ${
+                            class={`button-switch h-2 w-2 rounded-full ${
                                 isRememberMe ? "switch-on" : "switch-off"
                             }`}
                         />
@@ -215,15 +216,17 @@
                     <p class="text-gray-600 text-sm">
                         Chưa có tài khoản? <a
                             href="/auth/register"
-                            class="text-slate-800 lg:lg:hover:underline font-bold">Đăng ký</a
+                            class="text-slate-800 lg:lg:hover:underline font-bold"
+                            >Đăng ký</a
                         >
                     </p>
                 </div>
-                <div class="w-full bg-slate-400" style="height: .5px;"/>
+                <div class="w-full bg-slate-400" style="height: .5px;" />
                 <div class="text-center mt-3">
                     <a
                         href="/auth/recovery"
-                        class="text-black font-bold lg:hover:underline">Quên mật khẩu ?</a
+                        class="text-black font-bold lg:hover:underline"
+                        >Quên mật khẩu ?</a
                     >
                 </div>
             </div>
@@ -233,25 +236,25 @@
 
 <style>
     .remember-switch-bg {
-        background-color: rgb(200, 200, 200);
-        transition: background 0.5s ease-in-out;
+        border-color: rgb(255, 255, 255);
+        transition: border 0.5s ease-in-out;
     }
 
     .switch_active {
-        background-color: rgb(0, 128, 58);
+        border-color: rgb(0, 128, 58);
     }
     .button-switch {
-        background-color: rgb(80, 80, 80);
-        display: inline-block;
+        background-color: rgb(255, 255, 255);
         transition: all 0.3s ease-in-out;
     }
 
     .switch-on {
         transform: translateX(12px);
-        background-color: white;
+        background-color: rgb(0, 128, 58);
     }
     .switch-off {
         transform: translateX(-12px);
     }
+
 
 </style>

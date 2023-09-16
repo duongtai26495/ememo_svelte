@@ -23,9 +23,18 @@
     let isError = false;
 
     function isValidEmail(email) {
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  return emailRegex.test(email);
-}
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        return emailRegex.test(email);
+    }
+    const sendActivateCode = async (activate_email) => {
+        let config = {
+            method: "GET",
+            url: `${URL_PREFIX}public/send-activate-mail?email=${activate_email}`,
+            headers: { "Content-Type": "application/json" },
+        };
+        await axios.request(config);
+        window.location = "/auth/activate-account";
+    };
 
     const checkInputRegister = async () => {
         loading = true;
@@ -34,7 +43,7 @@
             isError = true;
         }
 
-        if(email.length < 5 && !isValidEmail(email)){
+        if (email.length < 5 && !isValidEmail(email)) {
             errorMsgEmail = "Email format is not correct";
             isError = true;
         }
@@ -50,13 +59,13 @@
         if (isError) {
             errorMsgCommon = "Something went wrong !!";
         } else {
-            let user = JSON.stringify({ 
+            let user = JSON.stringify({
                 f_name,
                 l_name,
                 email,
-                username, 
+                username,
                 password,
-             });
+            });
 
             let config = {
                 method: "post",
@@ -71,21 +80,21 @@
             await axios
                 .request(config)
                 .then((response) => {
-                    console.log(response)
                     if (response.status === 201) {
-                        localStorage.setItem("activate_email",email)
-                        window.location = "/auth/activate-account"
+                        localStorage.setItem("activate_email", email);
                     } else {
                         errorMsgCommon = "Something went wrong !!";
                     }
                 })
                 .catch((error) => {
-                    const result = error.response.data
-                        errorMsgCommon = result.msg
+                    const result = error.response.data;
+                    errorMsgCommon = result.msg;
                 })
                 .finally(() => {
                     loading = false;
                 });
+
+            await sendActivateCode(email);
         }
         loading = false;
     };
@@ -96,21 +105,24 @@
         }
     };
 </script>
+
 <svelte:head>
-    <title>Authentication - Register</title> 
+    <title>Authentication - Register</title>
 </svelte:head>
-<div class="w-full h-screen flex flex-col p-0 lg:p-4 items-center justify-center">
+<div
+    class="w-full h-screen flex flex-col p-0 lg:p-2 items-center justify-center"
+>
     <div
-        class="flex w-full lg:max-w-2xl rounded-lg lg:shadow-lg overflow-hidden m-auto self-center"
+        class="flex w-full lg:max-w-2xl rounded-lg lg:shadow-lg overflow-hidden m-auto self-center register-wrapper"
     >
-        <div class="w-1/2 p-8 bg-form hidden lg:flex">
+        <div class="w-1/2 p-2 bg-form hidden lg:flex">
             <div
-                class="text-center m-auto rounded-md border bg-white bg-opacity-90 p-4"
+                class="text-center m-auto rounded-md border bg-black bg-opacity-50 p-4"
             >
-                <p class="text-gray-600 text-sm">
+                <p class="text-white text-sm">
                     Đã có tài khoản? <a
                         href="/auth/login"
-                        class="text-black lg:hover:underline font-bold"
+                        class="text-white lg:hover:underline font-bold"
                         >Đăng nhập ngay</a
                     >
                 </p>
@@ -128,44 +140,45 @@
             <div>
                 <div class="flex flex-col">
                     <div class="flex gap-2">
-
                         <div class="flex flex-col">
                             <label
-                            for="fName"
-                            class="block text-gray-600 text-sm font-medium mb-1"
-                            >Họ</label
+                                for="fName"
+                                class="block text-gray-600 text-sm font-medium mb-1"
+                                >Họ</label
                             >
                             <input
-                            type="text"
-                            id="fName"
-                            name="fName"
-                            on:keypress={(e) => handleNextInput(e, l_nameRef)}
-                            value={f_name}
-                            on:change={(e) => (f_name = e.target.value)}
-                            class={`w-full px-4 py-2 border rounded-lg focus:outline-none ${
-                                errorMsgFullname ? "border-red-500" : ""
-                            } focus:border-blue-500`}
-                            placeholder="John"
-                        />
-                    </div>
-                    <div class="flex flex-col">
-                        <label
-                            for="lName"
-                            class="block text-gray-600 text-sm font-medium mb-1"
-                            >Tên</label
-                        >
-                        <input
-                        type="text"
-                        id="lName"
-                            name="lName"
-                            bind:this={l_nameRef}
-                            on:keypress={(e) => handleNextInput(e, emailRef)}
-                            value={l_name}
-                            on:change={(e) => (l_name = e.target.value)}
-                            class={`w-full px-4 py-2 border rounded-lg focus:outline-none ${
-                                errorMsgFullname ? "border-red-500" : ""
-                            } focus:border-blue-500`}
-                            placeholder="Smith"
+                                type="text"
+                                id="fName"
+                                name="fName"
+                                on:keypress={(e) =>
+                                    handleNextInput(e, l_nameRef)}
+                                value={f_name}
+                                on:change={(e) => (f_name = e.target.value)}
+                                class={`w-full px-4 py-2 border rounded-lg focus:outline-none ${
+                                    errorMsgFullname ? "border-red-500" : ""
+                                } focus:border-blue-500`}
+                                placeholder="John"
+                            />
+                        </div>
+                        <div class="flex flex-col">
+                            <label
+                                for="lName"
+                                class="block text-gray-600 text-sm font-medium mb-1"
+                                >Tên</label
+                            >
+                            <input
+                                type="text"
+                                id="lName"
+                                name="lName"
+                                bind:this={l_nameRef}
+                                on:keypress={(e) =>
+                                    handleNextInput(e, emailRef)}
+                                value={l_name}
+                                on:change={(e) => (l_name = e.target.value)}
+                                class={`w-full px-4 py-2 border rounded-lg focus:outline-none ${
+                                    errorMsgFullname ? "border-red-500" : ""
+                                } focus:border-blue-500`}
+                                placeholder="Smith"
                             />
                         </div>
                     </div>
@@ -278,6 +291,4 @@
 </div>
 
 <style>
-
-
 </style>
