@@ -46,13 +46,25 @@
         }
     };
 
+    const checkTheCode = async (recovery_code) => {
+        let config = {
+            method:"GET",
+            maxBodyLength: Infinity,
+            url : `${URL_PREFIX}public/check-code/${recovery_code}`,
+            headers:{"Content-Type":"application/json"},
+        }
+        const result = await axios.request(config)
+        return result.data
+    }
     const submitCode = async () => {
         errorMsg = "";
         isSuccess = false;
         isLoading = true;
         if (recovery_code.length === 10) {
-            let data = JSON.stringify({
-                email: recovery_email,
+            if(checkTheCode(recovery_code)){
+
+                let data = JSON.stringify({
+                    email: recovery_email,
                 password,
             });
 
@@ -78,6 +90,7 @@
                     errorMsg = error.response.data.msg;
                     isLoading = false;
                 });
+            }
         }
         isLoading = false;
     };

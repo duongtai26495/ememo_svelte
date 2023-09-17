@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
+body{
+    background-color: rgba(240,240,240,1);
+}
 .bg-auth {
     width: 100vw;
     height: 100vh;
