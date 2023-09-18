@@ -1,7 +1,8 @@
 <script>
     import axios from "axios";
     import { goto } from "$app/navigation";
-    const URL_PREFIX = "http://192.168.1.19:8080/";
+    import {URL_PREFIX, ACTIVATE_EMAIL, IS_REMEMBER, ACCESS_TOKEN, REFRESH_TOKEN, SUCCESS_RESULT} from "$lib/constants.js"
+    import {fetchApiData} from "$lib/functions.js"
 
     let l_nameRef;
     let emailRef;
@@ -70,30 +71,15 @@
                 password,
             });
 
-            let config = {
-                method: "post",
-                maxBodyLength: Infinity,
-                url: `${URL_PREFIX}public/sign-up`,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                data: user,
-            };
-
-            await axios
-                .request(config)
-                .then((response) => {
-                    if (response.status === 201) {
-                        localStorage.setItem("activate_email", email);
-                    } else {
-                        errorMsgCommon = "Something went wrong !!";
-                    }
-                })
-                .catch((error) => {
-                    const result = error.response.data;
-                    errorMsgCommon = result.msg;
-                })
-            await sendActivateCode(email);
+            
+            const result = await fetchApiData("public/sign-up",null,"POST",user)
+            if(result.status === SUCCESS_RESULT){
+                await sendActivateCode(email);
+                localStorage.setItem(ACTIVATE_EMAIL, email)
+                goto("/auth/activate-account")
+            }else{
+                errorMsgCommon = result.data.msg
+            }
         }
         loading = false;
     };

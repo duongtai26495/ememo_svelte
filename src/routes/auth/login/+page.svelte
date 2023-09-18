@@ -1,10 +1,8 @@
 <script>
     import axios from "axios";
-    const USERNAME_REMEMBER = "username_remember";
-    const IS_REMEMBER = "isRemember";
-    const ACCESS_TOKEN = "actk";
-    const REFRESH_TOKEN = "rftk";
-    const URL_PREFIX = "http://192.168.1.19:8080/";
+    import { checkToken, checkLogin } from "$lib/functions.js";
+    import {URL_PREFIX, USERNAME_REMEMBER, IS_REMEMBER, ACCESS_TOKEN, REFRESH_TOKEN} from "$lib/constants.js"
+
     let unameRef;
     let passwordRef;
     let submitRef;
@@ -73,6 +71,7 @@
                             REFRESH_TOKEN,
                             result.refresh_token
                         );
+                        checkLogin()
                     } else {
                         errorMsgCommon = "Username or Password is incorrect";
                     }

@@ -1,7 +1,8 @@
 <script>
     import axios from "axios";
     import { goto } from "$app/navigation";
-    const URL_PREFIX = "http://192.168.1.19:8080/";
+    import { URL_PREFIX, ACTIVATE_EMAIL,SUCCESS_RESULT } from "$lib/constants.js";
+    import {fetchApiData} from "$lib/functions"
 
     let activate_email = "";
     let activate_code = "";
@@ -9,20 +10,10 @@
     let isSuccess = false;
     let errorMsg = "";
 
-    let ACTIVE_EMAIL = "activate_email";
-
     const getActivateCode = async (activate_email) => {
         isLoading = true;
-        let config = {
-            method: "GET",
-            url: `${URL_PREFIX}public/send-activate-mail?email=${activate_email}`,
-            headers: { "Content-Type": "application/json" },
-        };
-        await axios
-            .request(config)
-            .then((response) => {
-                const result = response.data;
-                if (result.status === "SUCCESS") {
+        const result = await fetchApiData(`public/send-activate-mail?email=${activate_email}`,null,"GET")
+                if (result.status === SUCCESS_RESULT) {
                     isLoading = false;
                     isSuccess = false;
                     errorMsg = "";
@@ -30,18 +21,13 @@
                     errorMsg = result.msg;
                     isLoading = false;
                 }
-            })
-            .catch((error) => {
-                errorMsg = error.response.data.msg;
-                isLoading = false;
-            });
     };
 
     const onLoadActivate = async () => {
         if (typeof localStorage !== "undefined") {
-            activate_email = localStorage.getItem(ACTIVE_EMAIL);
+            activate_email = localStorage.getItem(ACTIVATE_EMAIL);
             if (!activate_email) {
-                goto("/auth/login")
+                goto("/auth/login");
             }
         }
     };
@@ -55,29 +41,19 @@
                 code: activate_code,
             });
 
-            let config = {
-                method: "POST",
-                maxBodyLength: Infinity,
-                url: `${URL_PREFIX}public/activate-account`,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                data,
-            };
-            await axios
-                .request(config)
-                .then((response) => {
-                    const result = response.data
-                    if(result.status === "SUCCESS"){
-                        localStorage.removeItem(ACTIVE_EMAIL);   
-                        isSuccess = true;
-                    }
-                        isLoading = false;
-                })
-                .catch((error) => {
-                    errorMsg = error.response.data.msg;
-                    isLoading = false;
-                });
+            const result = await fetchApiData(
+                `public/activate-account`,
+                null,
+                "POST",
+                data
+            );
+            if (result.status === SUCCESS_RESULT) {
+                localStorage.removeItem(ACTIVATE_EMAIL);
+                isSuccess = true;
+            } else {
+                errorMsg = result.data.msg;
+                isLoading = false;
+            }
         }
         isLoading = false;
     };

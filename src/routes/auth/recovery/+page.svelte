@@ -1,7 +1,12 @@
 <script>
     import axios from "axios";
     import { goto } from "$app/navigation";
-    const URL_PREFIX = "http://192.168.1.19:8080/";
+    import {fetchApiData} from "$lib/functions"
+    import {
+        URL_PREFIX,
+        ACTIVATE_EMAIL,
+        ACTIVATE_CODE,
+    } from "$lib/constants.js";
 
     let recovery_email = "";
     let recovery_code = "";
@@ -18,78 +23,57 @@
     const getRecoveryCode = async () => {
         isLoading = true;
         if (isValidEmail(recovery_email)) {
-            let config = {
-                method: "GET",
-                url: `${URL_PREFIX}public/recovery/${recovery_email}`,
-                headers: { "Content-Type": "application/json" },
-            };
-            await axios
-                .request(config)
-                .then((response) => {
-                    const result = response.data;
-                    if (result.status === "SUCCESS") {
-                        isLoading = false;
-                        isSuccess = false;
-                        isSend = true;
-                        errorMsg = "";
-                    } else {
-                        errorMsg = result.msg;
-                        isLoading = false;
-                        isSend = false;
-                    }
-                })
-                .catch((error) => {
-                    errorMsg = error.response.data.msg;
-                    isLoading = false;
-                    isSend = false;
-                });
+            const result = await fetchApiData(
+                `public/recovery/${recovery_email}`,
+                null,
+                "GET"
+            );
+            console.log(result)
+            if (result.status === SUCCESS_RESULT) {
+                isLoading = false;
+                isSuccess = false;
+                isSend = true;
+                errorMsg = "";
+            } else {
+                errorMsg = result.msg;
+                isLoading = false;
+                isSend = false;
+            }
         }
     };
 
     const checkTheCode = async (recovery_code) => {
         let config = {
-            method:"GET",
+            method: "GET",
             maxBodyLength: Infinity,
-            url : `${URL_PREFIX}public/check-code/${recovery_code}`,
-            headers:{"Content-Type":"application/json"},
-        }
-        const result = await axios.request(config)
-        return result.data
-    }
+            url: `${URL_PREFIX}public/check-code/${recovery_code}`,
+            headers: { "Content-Type": "application/json" },
+        };
+        const result = await axios.request(config);
+        return result.data;
+    };
     const submitCode = async () => {
         errorMsg = "";
         isSuccess = false;
         isLoading = true;
         if (recovery_code.length === 10) {
-            if(checkTheCode(recovery_code)){
-
+            if (checkTheCode(recovery_code)) {
                 let data = JSON.stringify({
                     email: recovery_email,
-                password,
-            });
+                    password,
+                });
 
-            let config = {
-                method: "POST",
-                maxBodyLength: Infinity,
-                url: `${URL_PREFIX}public/recovery-password/${recovery_code}`,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                data,
-            };
-            await axios
-                .request(config)
-                .then((response) => {
-                    const result = response.data;
-                    if (result.status === "SUCCESS") {
-                        isSuccess = true;
-                    }
-                    isLoading = false;
-                })
-                .catch((error) => {
+                const result = await fetchApiData(
+                    `public/recovery-password/${recovery_code}`,
+                    null,
+                    "GET"
+                );
+                if (result.status === SUCCESS_RESULT) {
+                    isSuccess = true;
+                } else {
                     errorMsg = error.response.data.msg;
                     isLoading = false;
-                });
+                }
             }
         }
         isLoading = false;

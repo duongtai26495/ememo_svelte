@@ -42,7 +42,7 @@
                     /></svg
                 >
             </button>
-            <p class="text-xl font-bold">Logo</p>
+            <a href="/" class="text-xl font-bold">Logo</a>
         </div>
         <div
             class={`m-menu ${
