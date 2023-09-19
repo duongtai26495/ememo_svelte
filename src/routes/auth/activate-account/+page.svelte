@@ -1,7 +1,7 @@
 <script>
     import axios from "axios";
     import { goto } from "$app/navigation";
-    import { URL_PREFIX, ACTIVATE_EMAIL,SUCCESS_RESULT } from "$lib/constants.js";
+    import { URL_PREFIX, ACTIVATE_EMAIL,SUCCESS_RESULT,IS_SEND_ACTIVATE_MAIL } from "$lib/constants.js";
     import {fetchApiData} from "$lib/functions"
 
     let activate_email = "";
@@ -9,6 +9,7 @@
     let isLoading = false;
     let isSuccess = false;
     let errorMsg = "";
+    let isFirstTimeSend = false
 
     const getActivateCode = async (activate_email) => {
         isLoading = true;
@@ -26,11 +27,29 @@
     const onLoadActivate = async () => {
         if (typeof localStorage !== "undefined") {
             activate_email = localStorage.getItem(ACTIVATE_EMAIL);
+            isFirstTimeSend = Boolean(localStorage.getItem(IS_SEND_ACTIVATE_MAIL))
+
             if (!activate_email) {
                 goto("/auth/login");
+            }else{
+                if(!isFirstTimeSend) {
+                   await sendActivateCode(activate_email)
+                }
             }
         }
     };
+
+    
+    
+    const sendActivateCode = async (activate_email) => {
+        const result = await fetchApiData(`public/send-activate-mail?email=${activate_email}`,null,"GET")
+        if(result.status === SUCCESS_RESULT){
+            isLoading = false;
+            localStorage.setItem(IS_SEND_ACTIVATE_MAIL, true)
+            goto("/auth/activate-account");
+        }
+    };
+
     const submitCode = async () => {
         errorMsg = "";
         isSuccess = false;

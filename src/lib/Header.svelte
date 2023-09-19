@@ -2,7 +2,6 @@
     let menu_items = [
         { name: "Home", url: "/" },
         { name: "About", url: "/about" },
-        { name: "Contact", url: "/contact" },
         { name: "My account", url: "/account" },
     ];
 

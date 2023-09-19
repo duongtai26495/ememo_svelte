@@ -1,5 +1,5 @@
 
-export const URL_PREFIX = "http://192.168.1.6:8080/";
+export const URL_PREFIX = "http://192.168.1.13:8080/";
 export const USERNAME_REMEMBER = "username_remember";
 export const IS_REMEMBER = "isRemember";
 export const ACCESS_TOKEN = "actk";
@@ -24,3 +24,4 @@ export const EXPAND_SIDEBAR = "expand_sidebar"
 export const HOMEPAGE_ANALYTICS = "homepage_analytics"
 export const DETAILPAGE_ANALYTICS = "detailpage_analytics"
 export const USERNAME_LOCAL = "uname_local"
+export const IS_SEND_ACTIVATE_MAIL = "is_send_mail"

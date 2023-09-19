@@ -1,7 +1,18 @@
 <script>
     import axios from "axios";
-    import { checkToken, checkLogin } from "$lib/functions.js";
-    import {URL_PREFIX, USERNAME_REMEMBER, IS_REMEMBER, ACCESS_TOKEN, REFRESH_TOKEN} from "$lib/constants.js"
+
+    import { goto } from "$app/navigation";
+    import { checkToken, checkLogin, fetchApiData } from "$lib/functions.js";
+    import {
+        URL_PREFIX,
+        USERNAME_REMEMBER,
+        IS_REMEMBER,
+        ACCESS_TOKEN,
+        REFRESH_TOKEN,
+        SUCCESS_RESULT,
+        ACTIVATE_EMAIL,
+        LOCAL_USER,
+    } from "$lib/constants.js";
 
     let unameRef;
     let passwordRef;
@@ -51,37 +62,21 @@
             errorMsgCommon = "";
             let user = JSON.stringify({ username, password });
 
-            let config = {
-                method: "post",
-                maxBodyLength: Infinity,
-                url: `${URL_PREFIX}public/sign-in`,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                data: user,
-            };
+            const result = await fetchApiData(
+                "public/sign-in",
+                null,
+                "POST",
+                user
+            );
 
-            await axios
-                .request(config)
-                .then((response) => {
-                    if (response.status === 200) {
-                        const result = response.data.content;
-                        localStorage.setItem(ACCESS_TOKEN, result.access_token);
-                        localStorage.setItem(
-                            REFRESH_TOKEN,
-                            result.refresh_token
-                        );
-                        checkLogin()
-                    } else {
-                        errorMsgCommon = "Username or Password is incorrect";
-                    }
-                })
-                .catch((error) => {
-                    errorMsgCommon = "Username or Password is incorrect";
-                })
-                .finally(() => {
-                    loading = false;
-                });
+            if (result.status === SUCCESS_RESULT) {
+                const data = result.content;
+                localStorage.setItem(ACCESS_TOKEN, data.access_token);
+                localStorage.setItem(REFRESH_TOKEN, data.refresh_token);
+                await getUserInfo(username, data.access_token);
+            } else {
+                errorMsgCommon = "Username or Password is incorrect";
+            }
         }
         loading = false;
     };
@@ -91,6 +86,25 @@
             ref.focus();
         }
     };
+
+    const getUserInfo = async (username, token) => {
+        const result = await fetchApiData(
+            `user/info/${username}`,
+            token,
+            "GET"
+        );
+        if (result.status === SUCCESS_RESULT) {
+            let user = result.content;
+            localStorage.setItem(LOCAL_USER, JSON.stringify(result.content));
+            if (user.active === true) {
+                checkLogin;
+            } else {
+                localStorage.setItem(ACTIVATE_EMAIL, user.email);
+                goto("/auth/activate-account");
+            }
+        }
+    };
+
 </script>
 
 <svelte:head>
@@ -254,6 +268,4 @@
     .switch-off {
         transform: translateX(-12px);
     }
-
-
 </style>

@@ -28,16 +28,7 @@
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         return emailRegex.test(email);
     }
-    const sendActivateCode = async (activate_email) => {
-        let config = {
-            method: "GET",
-            url: `${URL_PREFIX}public/send-activate-mail?email=${activate_email}`,
-            headers: { "Content-Type": "application/json" },
-        };
-        await axios.request(config);
-        loading = false;
-        goto("/auth/activate-account");
-    };
+    
 
     const checkInputRegister = async () => {
         loading = true;
@@ -74,7 +65,6 @@
             
             const result = await fetchApiData("public/sign-up",null,"POST",user)
             if(result.status === SUCCESS_RESULT){
-                await sendActivateCode(email);
                 localStorage.setItem(ACTIVATE_EMAIL, email)
                 goto("/auth/activate-account")
             }else{
